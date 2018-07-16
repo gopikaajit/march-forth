@@ -1,7 +1,7 @@
 #!/usr/bin/python3.5m
 
 #import libraries
-import plotly
+
 import seaborn as sns
 import pandas as pd
 import sklearn
@@ -16,8 +16,7 @@ meta_data = pd.read_csv('PS_20174392719_1491204439457_log.csv')
 
 
 #renaming the datavariables
-meta_data = meta_data.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig', \  
-                        'oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
+meta_data = meta_data.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig','oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
 
 
 #data cleaning part
