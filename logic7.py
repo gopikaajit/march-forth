@@ -64,7 +64,7 @@ print('Test accuracy of logistic regression:-\n',sklearn.metrics.accuracy_score(
 
 #gradient boosting classifier
 from sklearn.ensemble import GradientBoostingClassifier
-clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1)
+clf = GradientBoostingClassifier(n_estimators=600)
 model=clf.fit(X_train, y_train)
 predictions = model.predict(X_test)
 print('classification report:-\n',sklearn.metrics.classification_report(y_test,predictions))
