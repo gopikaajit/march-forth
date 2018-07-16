@@ -1,4 +1,6 @@
 #!/usr/bin/python3.5m
+
+#import libraries
 import plotly
 import seaborn as sns
 import pandas as pd
@@ -8,13 +10,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 warnings.filterwarnings('ignore')
 
-meta_data = pd.read_csv('PS_20174392719_1491204439457_log.csv')                                        #to read the.csv file
-meta_data = meta_data.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig', \
-                        'oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
-print('\nNumber of transactions:-',len(meta_data))
 
-X = meta_data.loc[(meta_data.type == 'TRANSFER') | (meta_data.type == 'CASH_OUT')]                                          #data cleaning part
-print('\nNumber of transactions after narrowing the search to transfer and cash_out:-',len(X))   
+#to load the dataset
+meta_data = pd.read_csv('PS_20174392719_1491204439457_log.csv')          
+
+
+#renaming the datavariables
+meta_data = meta_data.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig', \  
+                        'oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
+
+
+#data cleaning part
+X = meta_data.loc[(meta_data.type == 'TRANSFER') | (meta_data.type == 'CASH_OUT')]                                        
+   
 randomState = 5
 np.random.seed(randomState)      
 
@@ -35,23 +43,27 @@ X.loc[(X.oldBalanceOrig == 0) & (X.newBalanceOrig == 0) & (X.amount != 0), \
 X['errorBalanceOrig'] = X.newBalanceOrig + X.amount - X.oldBalanceOrig
 X['errorBalanceDest'] = X.oldBalanceDest + X.amount - X.newBalanceDest
 
+
+#splitting dataset
 from sklearn.model_selection import StratifiedShuffleSplit
-sss = sklearn.model_selection.StratifiedShuffleSplit(n_splits=100, test_size=0.5, random_state=42)     #splitting dataset
+sss = sklearn.model_selection.StratifiedShuffleSplit(n_splits=100, test_size=0.5, random_state=42)     
 for train_index, test_index in sss.split(X, y):
 	X_train, X_test= X.iloc[train_index], X.iloc[test_index]
 	y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
-
+#logistic regression
 from sklearn import linear_model
-logitic = linear_model.LogisticRegression(solver = 'sag')                                                            #
-model = logitic.fit(X_train,y_train)                                                                   #
-predictions = model.predict(X_test)                                                                    #
-print('\nclassification report:-\n',sklearn.metrics.classification_report(y_test,predictions))         #machine learning part
+logitic = linear_model.LogisticRegression(solver = 'sag')                                                            
+model = logitic.fit(X_train,y_train)                                                                   
+predictions = model.predict(X_test)                                                                    
+print('\nclassification report:-\n',sklearn.metrics.classification_report(y_test,predictions))        
 
-arr = sklearn.metrics.confusion_matrix(y_test, predictions)                                            #
+arr = sklearn.metrics.confusion_matrix(y_test, predictions)                                            
 print(arr)
-print('Test accuracy of logistic regression:-\n',sklearn.metrics.accuracy_score(y_test,predictions))   #
+print('Test accuracy of logistic regression:-\n',sklearn.metrics.accuracy_score(y_test,predictions))   
 
+
+#gradient boosting classifier
 from sklearn.ensemble import GradientBoostingClassifier
 clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1)
 model=clf.fit(X_train, y_train)
@@ -60,6 +72,10 @@ print('classification report:-\n',sklearn.metrics.classification_report(y_test,p
 print('confusion_matrix:-\n',sklearn.metrics.confusion_matrix(y_test, predictions))
 print('Test accuracy of gradient boosting classifier is:-\n',sklearn.metrics.accuracy_score(y_test,predictions))
 
+
+
+
+#heatmap plotting code
 Xfraud = X.loc[y == 1]    
 XnonFraud = X.loc[y == 0]
                   
